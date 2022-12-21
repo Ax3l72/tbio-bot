@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const tmi = require('tmi.js');
 const { Client, Partials, GatewayIntentBits } = require('discord.js');
-const { TWITCH_TOKEN_CHANNEL, DISCORD_TOKEN_BOT } = process.env;
+const { TWITCH_TOKEN_CHANNEL, DISCORD_TOKEN_BOT, DISCORD_CHANNEL } = process.env;
 
 const Tcli = new tmi.client({
     options: {
@@ -12,11 +12,12 @@ const Tcli = new tmi.client({
         reconnect:  true
     },
     identity: {
-        username: "botname",
+        username: "elFribot",
         password: `${TWITCH_TOKEN_CHANNEL}`
     },
     channels: [
-        "terrabiodao"
+        "terrabiodao",
+        "iamfri42"
     ]
 });
 
@@ -42,18 +43,18 @@ Tcli.on('connected', () => {
     console.log("Twitch bot ready");
 });
 
-Tcli.on('chat', (user, message, isSelf) => {
+Tcli.on('message', (channel, tags, message, isSelf) => {
     if (isSelf) return;
-    Dcli.channels.cache.get("1040253673693003826").send(`**\`\`${user['display-name']}\`\`** : ${message}`)
+    Dcli.channels.cache.get(DISCORD_CHANNEL).send(`**\`\`${tags.username}\`\`** : ${message}`)
 });
 
 Dcli.on("messageCreate", async (message) => {
-    
-    let msgold= message.content
-    useRegex(msgold) 
-    function useRegex(input) {
-        let regex = /`\*_\($/gm;
-        return console.log(regex.test(input));
-    }
+    if(message.author.bot)return;
+    // let msgold= message.content
+    // useRegex(msgold) 
+    // function useRegex(input) {
+    //     let regex = /`\*_\($/gm;
+    //     return console.log(regex.test(input));
+    // }
     Tcli.say("iamfri42",`${message.author.tag} > ${message.content}`)
 });
